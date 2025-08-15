@@ -21,8 +21,15 @@ class MockExpenseService implements IExpenseService {
     required String category,
     String? description,
     DateTime? date,
+    String? paidById,
+    List<String>? participantIds,
+    String? source,
   }) async {
     await Future.delayed(const Duration(milliseconds: 100));
+
+    // Default to equal split among participants
+    final actualParticipantIds = participantIds ?? [paidById ?? 'default_user'];
+    final participants = Expense.splitEqually(actualParticipantIds, amount);
 
     final expense = Expense(
       id: _generateExpenseId(),
@@ -31,6 +38,9 @@ class MockExpenseService implements IExpenseService {
       category: category,
       description: description,
       date: date ?? DateTime.now(),
+      paidById: paidById ?? 'default_user',
+      participants: participants,
+      source: source,
     );
 
     _expenses[expense.id] = expense;
@@ -176,6 +186,9 @@ class MockExpenseService implements IExpenseService {
     String? category,
     String? description,
     DateTime? date,
+    String? paidById,
+    List<ExpenseParticipant>? participants,
+    String? source,
   }) async {
     await Future.delayed(const Duration(milliseconds: 100));
 
@@ -191,6 +204,9 @@ class MockExpenseService implements IExpenseService {
       category: category ?? existingExpense.category,
       description: description ?? existingExpense.description,
       date: date ?? existingExpense.date,
+      paidById: paidById ?? existingExpense.paidById,
+      participants: participants ?? existingExpense.participants,
+      source: source ?? existingExpense.source,
     );
 
     _expenses[id] = updatedExpense;

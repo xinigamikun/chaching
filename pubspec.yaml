@@ -1,19 +1,37 @@
 name: chaching
-description: "A new Flutter project."
+description: A personal finance expense tracker application
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.0+1
 
 environment:
-  sdk: ^3.8.1
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
+  cupertino_icons: ^1.0.2
+  drift: ^2.8.0
+  sqlite3_flutter_libs: ^0.5.0
+  path_provider: ^2.0.0
+  path: ^1.8.0
+  another_telephony: ^0.4.1
+  permission_handler: ^10.2.0
+  flutter_local_notifications: ^14.1.1
+  pdf: ^3.10.4
+  share_plus: ^7.0.2
+  provider: ^6.0.5
+  intl: ^0.18.1
+  uuid: ^3.0.7
+  flutter_secure_storage: ^8.0.0
+  encrypt: ^5.0.1
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^2.0.0
+  drift_dev: ^2.8.0
+  build_runner: ^2.4.6
 
 flutter:
   uses-material-design: true

@@ -1,3 +1,5 @@
+import '../services/encryption_service.dart';
+
 /// Interface for database operations and initialization
 abstract class IDatabase {
   /// Initialize the database and create necessary tables
@@ -29,4 +31,7 @@ abstract class IDatabase {
 
   /// Get database name
   String get databaseName;
+
+  /// Initialize encryption for the database
+  Future<void> initializeEncryption(EncryptionService encryptionService);
 }

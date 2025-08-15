@@ -56,7 +56,7 @@ void main() async {
   final categoryTotals = await expenseService.getExpensesByCategory();
   print('\nExpenses by Category:');
   categoryTotals.forEach((category, total) {
-    print('$category: \$${total}');
+    print('$category: \$$total');
   });
 
   // Update an expense

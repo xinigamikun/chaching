@@ -1,4 +1,5 @@
 import '../interfaces/i_database.dart';
+import '../services/encryption_service.dart';
 
 class MockDatabase implements IDatabase {
   bool _isInitialized = false;
@@ -54,5 +55,11 @@ class MockDatabase implements IDatabase {
   Future<bool> needsMigration() async {
     // Always return false for mock
     return false;
+  }
+
+  @override
+  Future<void> initializeEncryption(EncryptionService encryptionService) async {
+    // Simulate encryption initialization delay
+    await Future.delayed(const Duration(milliseconds: 100));
   }
 }

@@ -11,14 +11,35 @@ class AndroidSmsService implements ISmsService {
 
   /// Initialize the SMS service by checking permissions and starting the listener
   Future<bool> initialize() async {
-    final hasPermissions = await checkPermissions();
-    if (!hasPermissions) {
-      final granted = await requestPermissions();
-      if (!granted) {
+    try {
+      print('Initializing SMS service...');
+      
+      final hasPermissions = await checkPermissions();
+      print('SMS permissions status: $hasPermissions');
+      
+      if (!hasPermissions) {
+        print('Requesting SMS permissions...');
+        final granted = await requestPermissions();
+        if (!granted) {
+          print('SMS permissions denied by user');
+          return false;
+        }
+        print('SMS permissions granted by user');
+      }
+
+      print('Starting SMS listener...');
+      final listenerStarted = await startSmsListener();
+      if (!listenerStarted) {
+        print('Failed to start SMS listener');
         return false;
       }
+      
+      print('SMS service initialized successfully');
+      return true;
+    } catch (e) {
+      print('Error initializing SMS service: $e');
+      return false;
     }
-    return startSmsListener();
   }
 
   final _transactionController = StreamController<SmsTransaction>.broadcast();
@@ -72,21 +93,70 @@ class AndroidSmsService implements ISmsService {
   }
 
   Future<void> _handleNewSms(SmsMessage message) async {
-    if (!_isListening) return;
+    print('Foreground SMS received:');
+    print('From: ${message.address}');
+    print('Body: ${message.body}');
 
+    if (!_isListening) {
+      print('SMS listener is not active, ignoring message');
+      return;
+    }
+
+    if (!isTransactionSender(message.address ?? '')) {
+      print('Not a transaction sender, ignoring: ${message.address}');
+      return;
+    }
+
+    print('Processing transaction SMS...');
     final transaction = await parseSmsToTransaction(
       message.address ?? '',
       message.body ?? '',
     );
 
     if (transaction != null) {
+      print('Transaction processed successfully:');
+      print('Amount: ${transaction.amount}');
+      print('Merchant: ${transaction.merchantName}');
+      print('Type: ${transaction.transactionType}');
+      print('Method: ${transaction.paymentMethod}');
       _transactionController.add(transaction);
+    } else {
+      print('Could not parse transaction from message');
     }
   }
 
   // This method needs to be static as per telephony plugin requirements
   static Future<void> _handleBackgroundSms(SmsMessage message) async {
-    // Background handling if needed
+    print('Background SMS received from: ${message.address}');
+    
+    // Create a temporary instance to handle the background message
+    final service = AndroidSmsService();
+    
+    try {
+      // Check if the sender is a transaction sender
+      if (!service.isTransactionSender(message.address ?? '')) {
+        print('Ignored: Not a transaction sender - ${message.address}');
+        return;
+      }
+
+      // Process the message
+      final transaction = await service.parseSmsToTransaction(
+        message.address ?? '',
+        message.body ?? '',
+      );
+
+      if (transaction != null) {
+        print('Transaction parsed successfully in background:');
+        print('Amount: ${transaction.amount}');
+        print('Merchant: ${transaction.merchantName}');
+        print('Type: ${transaction.transactionType}');
+        print('Method: ${transaction.paymentMethod}');
+      } else {
+        print('Could not parse transaction from message: ${message.body}');
+      }
+    } catch (e) {
+      print('Error processing background SMS: $e');
+    }
   }
 
   @override
@@ -112,6 +182,7 @@ class AndroidSmsService implements ISmsService {
   }
 
   double? _extractAmount(String message) {
+    print('Extracting amount from message: $message');
     // Match common Indian currency patterns
     // Matches patterns like Rs. 1,234.56, INR 1234.56, ₹1,234
     final patterns = [
@@ -132,6 +203,8 @@ class AndroidSmsService implements ISmsService {
   }
 
   String? _extractMerchantName(String message) {
+    print('\nAttempting to extract merchant name:');
+    print('Message: $message');
     // Match merchant name patterns
     // Example: "at MERCHANT_NAME" or "to MERCHANT_NAME"
     final patterns = [
@@ -142,9 +215,12 @@ class AndroidSmsService implements ISmsService {
     for (final pattern in patterns) {
       final match = pattern.firstMatch(message);
       if (match != null) {
-        return match.group(1)?.trim();
+        final merchantName = match.group(1)?.trim();
+        print('Extracted merchant name: $merchantName');
+        return merchantName;
       }
     }
+    print('No merchant name found in message');
     return null;
   }
 
@@ -163,10 +239,23 @@ class AndroidSmsService implements ISmsService {
   }
 
   String? _extractPaymentMethod(String message) {
+    print('\nAttempting to extract payment method:');
+    print('Message: $message');
     final lowerMessage = message.toLowerCase();
-    if (lowerMessage.contains('upi')) return 'UPI';
-    if (lowerMessage.contains('card')) return 'Card';
-    if (lowerMessage.contains('net banking')) return 'Net Banking';
+    
+    if (lowerMessage.contains('upi')) {
+      print('Payment method found: UPI');
+      return 'UPI';
+    }
+    if (lowerMessage.contains('card')) {
+      print('Payment method found: Card');
+      return 'Card';
+    }
+    if (lowerMessage.contains('net banking')) {
+      print('Payment method found: Net Banking');
+      return 'Net Banking';
+    }
+    print('No payment method found in message');
     return null;
   }
 

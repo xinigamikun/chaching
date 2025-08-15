@@ -28,14 +28,14 @@ class DatabaseService implements IDatabase {
   @override
   Future<bool> initialize() async {
     try {
-      // Create tables and add default data
-      await _db.migration.onCreate(_db.executor as Migrator);
-      
       // Get and store the database path
       final dbFolder = await getApplicationDocumentsDirectory();
       _dbPath = p.join(dbFolder.path, databaseName);
 
-      // Initialize basic database
+      // Trigger database creation by accessing a table
+      // Drift will handle the creation and migration automatically
+      await _db.getCategories();
+
       _isInitialized = true;
       return true;
     } catch (e) {

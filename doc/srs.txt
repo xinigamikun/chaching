@@ -1,0 +1,1094 @@
+Text Box: NOTE: This template is shareware downloaded from www.processimpact.com. All shareware payments are donated to the Norm Kerth Benefit Fund to help a consultant who is disabled with a brain injury. Please visit http://www.processimpact.com/norm_kerth.html to make a shareware payment ($10 suggested). Thank you!
+Software Requirements Specification
+
+for
+
+Group Finance App (name wip)
+
+Version 1.0 approved
+
+Prepared by Jagathnath
+
+Blitz
+
+Text Box: eLearning versions of several popular Process Impact training seminars are available at www.processimpact.com/elearning.shtml, including “In Search of Excellent Requirements,” “Exploring User Requirements with Use Cases,” “Writing High-Quality Requirements,” “Software Inspections and Peer Reviews,” and “Project Management Best Practices”. Single-user and corporate-wide site licenses are both available.
+<date created>
+
+
+Table of Contents
+
+Table of Contents........................................................................................................................... ii
+
+Revision History............................................................................................................................. ii
+
+1.   Introduction............................................................................................................................. 1
+
+1.1   Purpose................................................................................................................................. 1
+
+1.2   Document Conventions.......................................................................................................... 1
+
+1.3   Intended Audience and Reading Suggestions........................................................................... 1
+
+1.4   Project Scope......................................................................................................................... 1
+
+1.5   References............................................................................................................................. 1
+
+2.   Overall Description................................................................................................................. 2
+
+2.1   Product Perspective................................................................................................................ 2
+
+2.2   Product Features.................................................................................................................... 2
+
+2.3   User Classes and Characteristics............................................................................................. 3
+
+2.4   Operating Environment.......................................................................................................... 3
+
+2.5   Design and Implementation Constraints................................................................................... 4
+
+2.6   User Documentation............................................................................................................... 4
+
+2.7   Assumptions and Dependencies.............................................................................................. 5
+
+3.   System Features....................................................................................................................... 5
+
+3.1   System Feature 1..................................................................... Error! Bookmark not defined.
+
+3.2   System Feature 2 (and so on).................................................... Error! Bookmark not defined.
+
+4.   External Interface Requirements......................................................................................... 11
+
+4.1   User Interfaces..................................................................................................................... 11
+
+4.2   Hardware Interfaces............................................................................................................. 12
+
+4.3   Software Interfaces............................................................................................................... 12
+
+4.4   Communications Interfaces................................................................................................... 13
+
+5.   Other Nonfunctional Requirements.................................................................................... 13
+
+5.1   Performance Requirements................................................................................................... 13
+
+5.2   Safety Requirements............................................................................................................ 13
+
+5.3   Security Requirements.......................................................................................................... 13
+
+5.4   Software Quality Attributes.................................................................................................. 14
+
+6.   Other Requirements.............................................................................................................. 14
+
+Appendix A: Glossary..................................................................... Error! Bookmark not defined.
+
+Appendix B: Analysis Models........................................................ Error! Bookmark not defined.
+
+Appendix C: Issues List.................................................................. Error! Bookmark not defined.
+
+ 
+
+ 
+
+Revision History
+
+Name
+
+Date
+
+Reason For Changes
+
+Version
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+1.     Introduction
+1.1     Purpose
+ This Software Requirements Specification (SRS) document outlines the functional and non-functional requirements for the Group Finance Tracking Application, version 1.0. The purpose of this application is to provide a digital platform for groups of individuals — such as roommates, travel groups, teams, or families — to collaboratively manage shared expenses, budgets, and financial responsibilities.
+
+
+This SRS covers the full scope of the application, including the mobile platform. It defines the requirements for key features such as group creation, shared expense tracking, debt settlements, notifications, and reporting.
+
+ 
+
+The document is intended for use by the development team, project managers, testers, UI/UX designers, and stakeholders. It ensures that all team members and stakeholders have a shared understanding of the system's capabilities and constraints.
+
+ 
+
+If this SRS is revised or expanded in the future, it may include integration with third-party payment services or banking APIs, which are out of scope for the current version.
+
+1.2     Document Conventions
+This document uses numbered headings for organization and bold text to highlight key terms. Requirements are stated clearly using “shall” for mandatory and “should” or “may” for optional features. Each requirement is individually listed with its own priority, if applicable. Acronyms are defined on first use and included in the Glossary.
+
+1.3     Project Scope
+The Group Finance Tracker is a personal finance application designed to simplify shared expense management. It reads SMS messages to automatically detect bills and allows users to assign participants for each expense. Users can later generate individual bills showing each person’s share. The app aims to reduce manual tracking, improve transparency, and streamline cost-sharing among friends, families, or roommates. This SRS defines the requirements for the initial release.
+
+1.4     References
+NA
+
+2.     Overall Description
+2.1     Product Perspective
+This product is a new, self-contained mobile application designed to track personal and group expenses by reading transaction-related SMS messages on Android devices and providing a manual entry option on iOS devices.
+
+It operates entirely offline, storing all data locally using Drift for structured storage and enabling expense management without requiring internet connectivity.
+
+The application integrates the following core components:
+
+·         SMS Listener (Android only) – Runs in the background to detect transaction-related messages and trigger expense notifications.
+
+·         Expense Manager – Allows manual entry, editing, and deletion of expenses, including source of payment and split options.
+
+·         Pending Expense Handler – Stores unconfirmed SMS-based expenses for later review.
+
+·         Bill Sharing Module – Generates PDF or text bills for entire groups or individual members and allows sharing via other apps.
+
+·         Dashboard & Analytics – Displays monthly spending totals, source-based spending distribution, and recent activity.
+
+ 
+
+System Context Diagram (Simplified)
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+2.2     Product Features
+This application is a new, self-contained product designed to help individuals and groups manage shared expenses efficiently. It is not part of an existing system or product family.
+
+The app leverages SMS parsing to automatically identify transaction or bill notifications, reducing the need for manual entry. It allows users to tag participants for each bill, and later generate individual payment summaries to facilitate easy settlements.
+
+The product is intended to work independently on mobile devices (Android initially), with potential future integration with payment platforms, contact lists, or cloud backup services.
+
+Key components of the system include:
+
+·         SMS Reader module
+
+·         Expense Parser and Categorizer
+
+·         Group & Member Management
+
+·         Bill Split Engine
+
+·         Report Generator
+
+Each of these components works together to provide a seamless user experience for tracking and splitting group expenses.
+
+ 
+
+2.3     User Classes and Characteristics
+The application is primarily designed for individual users who frequently share expenses with others. It supports the following user classes:
+
+·         1. Regular Users (Primary)
+
+·         Description: Everyday users who track and split personal/group expenses.
+
+·         Characteristics:
+
+o    Moderate to frequent app usage
+
+o    Basic technical skills
+
+o    Use core features like SMS bill detection, adding names, splitting bills, and generating summaries
+
+o    May use the app for travel, roommates, shared subscriptions, etc.
+
+·         Priority: High — main target audience
+
+·         2. Passive Participants (Secondary)
+
+·         Description: People whose names are added to shared expenses but do not use the app themselves.
+
+·         Characteristics:
+
+o    No direct app interaction
+
+o    Receive exported individual bill summaries (e.g., via PDF or WhatsApp)
+
+·         Priority: Medium — indirectly supported through bill outputs
+
+ 
+
+2.4     Operating Environment
+The Group Finance Tracker is a fully local-first mobile application designed to operate offline without reliance on cloud infrastructure. It supports both Android and iOS platforms.
+
+·         Hardware Platform
+
+o    Smartphones with SMS capabilities
+
+o    Minimum requirements: 2GB RAM, 1.5GHz processor
+
+·         Operating Systems
+
+o    Android: Version 9.0 (Pie) and above
+
+o    iOS: Version 13.0 and above
+
+·         Software Dependencies
+
+o    Local storage: Uses SQLite (Drift) or similar embedded database for storing transactions, users, and bills
+
+o    SMS access: App requires permission to read SMS on Android for automatic bill detection
+(Note: iOS does not allow direct SMS access; manual entry will be used instead)
+
+o    PDF generation: For exporting individual bills and summaries
+
+o    Notifications: Optional local notifications for bill reminders or alerts
+
+·         Coexisting Applications
+
+o    The app functions independently without requiring or interfering with messaging, contact, or other system apps.
+
+o    It does not require cloud sync, login, or internet access for core functionality.
+
+ 
+
+2.5     Design and Implementation Constraints
+2.5.1 Platform Restrictions:
+
+·         iOS does not permit automatic access to SMS inbox; bill detection must be manual or user-assisted on iOS.
+
+·         Android requires runtime permissions to access SMS, which must be handled securely and transparently.
+
+2.5.2 Local-Only Architecture:
+
+·         The app must function completely offline with no reliance on cloud storage or external servers.
+
+·         All user data must be stored and processed locally on the device.
+
+2.5.3 Storage Technology:
+
+·         Drift (Moor) is the selected local database framework due to its SQL-style querying and Flutter compatibility.
+
+·         Storage must be optimized for performance on low-end devices.
+
+2.5.4 Security and Privacy:
+
+·         User financial data must never leave the device.
+
+·         SMS data must be accessed only with explicit user permission.
+
+·         All data access must comply with OS-level permission models and privacy standards.
+
+·         No telemetry or background network activity is permitted unless explicitly user-initiated (e.g., exporting PDF).
+
+2.5.5 Cross-Platform Development:
+
+·         The app must be fully implemented in Flutter to support both Android and iOS from a single codebase.
+
+·         All third-party packages must support both platforms natively.
+
+2.5.6 Device Limitations:
+
+·         Must run efficiently on low-to-mid-range smartphones (min. 2GB RAM, limited storage).
+
+·         Background SMS detection must be optimized for battery and performance.
+
+2.5.7    Background Operations:
+
+·         On Android, the app must be able to process SMS messages in the background and:
+
+o   Detect transaction patterns
+
+o   Generate contextual notifications
+
+o   Temporarily store extracted bill data for later confirmation
+
+·         These operations must be power-efficient and not abuse background services.
+
+2.5.7 Design Standards:
+
+·         UI must follow Material Design for Android and Cupertino guidelines where appropriate on iOS.
+
+·         Bill parsing accuracy and clarity in notifications are critical to user trust.
+
+·         Code must follow clean architecture and Dart best practices for maintainability.
+
+ 
+
+2.6     User Documentation
+ The following user documentation components will be provided to assist users in understanding and using the Group Finance Tracker effectively:
+
+1.    In-App Onboarding Guide:
+
+o    A simple first-time walkthrough introducing key features such as SMS-based expense detection, bill splitting, and generating individual summaries.
+
+2.    Help Section:
+
+o    Accessible from the app’s settings menu.
+
+o    Contains FAQs and short usage instructions (e.g., how to tag participants, manage expenses, or edit entries).
+
+3.    Minimal In-App Hints:
+
+o    Lightweight labels or info icons near interactive elements (e.g., the split-evenly toggle slider) to guide users without overwhelming them.
+
+ 
+
+2.7     Assumptions and Dependencies
+2.7.1  Operating System Behavior:
+
+·         It is assumed that Android devices will continue to support SMS read permissions and background broadcast receivers.
+
+·         iOS will not support SMS reading; alternative user flows must be provided for iOS users.
+
+2.7.2  Permission Granting:
+
+·         Users are expected to grant necessary permissions (e.g., SMS access, notifications) for the app to function as intended on Android.
+
+2.7.3 Local Storage Availability:
+
+·         The app assumes that sufficient local storage is available for saving bill data, user preferences, and reports.
+
+2.7.4  Third-Party Libraries:
+
+·         The project depends on Flutter packages such as:
+
+o    Drift (Moor) for local database storage.
+
+o    permission_handler for managing runtime permissions.
+
+o    flutter_local_notifications for notifying users of detected bills.
+
+·         These libraries must remain maintained and compatible with newer OS versions.
+
+2.7.5  Device Compatibility:
+
+·         The app assumes a minimum of Android 8.0 (API 26) and iOS 13 for core functionality.
+
+·         Battery optimization policies and manufacturer-specific restrictions on background processing may impact behavior on some Android devices.
+
+2.7.6  No Network Dependency:
+
+·         The system assumes a fully offline model with no reliance on cloud services, user login, or internet connectivity.
+
+ 
+
+3.     System Features
+3.1     SMS-Based Bill Detection (Android Only)
+3.1.1      Description and Priority
+
+The application listens to incoming SMS messages and automatically detects transaction-related texts (e.g., debits, purchases). When a valid transaction is detected, a local notification is triggered.
+
+3.1.2      Stimulus/Response Sequences
+
+ 
+
+Stimulus
+
+System Response
+
+1. An SMS containing a transaction message (e.g., debit, payment) is received
+
+App's background SMS listener is triggered and parses the message content.
+
+2. Message is identified as a bill or expense (based on keywords, patterns)
+
+App extracts bill amount, merchant info, date, and time from the SMS.
+
+3. Parsed data is valid and matches known transaction patterns
+
+App stores the bill temporarily in local memory as a draft expense.
+
+4. A draft bill is successfully created
+
+App shows a notification to the user with a summary and an action: “Tap to confirm and add this expense.”
+
+5. User taps the notification
+
+App opens the “Add Expense” screen pre-filled with parsed data (amount, date).
+
+6. User ignores the notification
+
+Draft bill remains stored locally and can be accessed later from a “Pending Bills” section.
+
+7. User denies SMS permission or disables background processing
+
+App cannot detect or notify on new bills; user must manually add expenses.
+
+ 
+
+3.1.3      Functional Requirements
+
+·         The system shall monitor SMS messages in the background.
+
+·         The system shall parse and extract key details such as amount, merchant name, and timestamp.
+
+·         The system shall store a draft bill entry for user review.
+
+·         The system shall notify the user with an actionable prompt to add or ignore the detected expense
+
+·         The system shall allow users to later review SMS-detected bills stored as drafts and discard them if identified as false positives.
+
+ 
+
+ 
+
+                
+
+3.2     Manual Bill Entry (IOS and Android)
+3.2.1      Description and Priority
+
+Users can split the bill between multiple people, either equally or unequally.
+
+3.2.2      Stimulus/Response Sequences
+
+ 
+
+Stimulus
+
+System Response
+
+User taps “Add Expense”
+
+App displays manual entry form
+
+User fills in amount, description, date
+
+App accepts input and validates entries
+
+User submits the form
+
+App saves the expense to local database
+
+User leaves required fields empty
+
+App prompts error for missing fields
+
+ 
+
+3.3.3      Functional Requirements
+
+·         The system shall allow users to enter an amount, category, and description.
+
+·         The system shall allow users to assign participants to the bill.
+
+·         The system shall allow users to tag the bill as paid by a specific person.
+
+3.3     Bill Splitting
+3.3.1      Description and Priority
+
+Users can split the bill between multiple people, either equally or unequally.
+
+3.3.2      Stimulus/Response Sequences
+
+Stimulus
+
+System Response
+
+User adds participants to a bill
+
+App displays list of participant name fields
+
+User toggles “Split Evenly”
+
+App auto-distributes the amount equally
+
+User toggles off “Split Evenly”
+
+App enables custom input for each share
+
+User enters shares that don’t match total
+
+App shows validation error
+
+User confirms and saves split
+
+App stores the participant shares with the bill
+
+ 
+
+ 
+
+3.3.3      Functional Requirements
+
+·         The system shall allow users to add participants by name.
+
+·         The system shall provide a toggle to split the bill equally or unequally.
+
+·         For unequal splits, the system shall allow custom amounts per participant.
+
+·         The system shall save each participant’s share internally.
+
+·         The system shall also see if the unequal split tallies up to the total bill amount.
+
+3.4     Individual Bill Generation
+3.4.1      Description and Priority
+
+The system can generate a summary for each participant showing their total owed or paid across all shared bills.
+
+3.4.2      Stimulus/Response Sequences
+
+Stimulus
+
+System Response
+
+User selects a participant
+
+App loads all bills involving that participant
+
+User taps “Generate Bill”
+
+App aggregates and calculates net owed/paid amount
+
+User taps “Export as PDF” (optional feature)
+
+App creates downloadable/exportable summary (planned feature)
+
+ 
+
+ 
+
+3.4.3      Functional Requirements
+
+·         The system shall aggregate all expenses involving a participant.
+
+·         The system shall calculate the net balance for each person.
+
+·         The system shall generate a human-readable bill (e.g., in-app view or PDF) for each participant.
+
+ 
+
+3.5     Local Data Management
+3.5.1      Description and Priority
+
+All user data, including bills and participant information, is stored locally
+
+3.5.2      Stimulus/Response Sequences
+
+Stimulus
+
+System Response
+
+App is launched
+
+App reads data from local storage (Drift)
+
+User deletes a bill
+
+App removes bill from local database
+
+User edits a bill
+
+App updates data in storage with new values
+
+User closes and reopens app
+
+All previously saved data is retained
+
+ 
+
+ 
+
+3.5.3      Functional Requirements
+
+·         The system shall store data using a local database (e.g., Drift).
+
+·         The system shall persist data across sessions.
+
+·         The system shall allow users to delete or edit stored entries.
+
+3.6     Notifications
+3.6.1      Description and Priority
+
+The application includes a real-time notification feature that alerts users when a transaction-related SMS is detected and interpreted as a potential bill. These notifications are designed to help users quickly act on new expenses without manually opening the app. Each notification includes actionable options such as confirming or discarding the expense.
+The goal is to improve user engagement and ensure bills are captured promptly, while minimizing the clutter of false positives
+
+3.6.2      Stimulus/Response Sequences
+
+Stimulus
+
+System Response
+
+A draft bill is created (via SMS detection)
+
+App shows a notification summarizing the transaction, with options: “Add” and “Discard”
+
+User taps “Add”
+
+App opens “Add Expense” screen with pre-filled data
+
+User taps “Discard”
+
+App discards the transaction as a false positive and does not create an expense backlog
+
+User ignores or dismisses the notification
+
+No action taken; draft bill remains in “Pending Bills” section for later review
+
+ 
+
+ 
+
+3.6.3      Functional Requirements
+
+·         The system shall detect transaction-related SMS messages and generate notifications when a valid bill is identified.
+
+·         The system shall display a notification with a summary of the transaction and provide two action buttons: “Add” and “Discard”.
+
+·         When the user taps “Add”, the app shall open the “Add Expense” screen with pre-filled data from the SMS.
+
+·         When the user taps “Discard”, the app shall treat the SMS as a false positive and not save the transaction.
+
+·         If the notification is dismissed or ignored, the app shall store the extracted bill as a pending draft, allowing the user to review and take action later.
+
+3.7     Pending Bills Management
+3.7.1      Description and Priority
+
+The Pending Bills section stores all bills that were detected via SMS but not confirmed by the user. This feature provides users with the ability to manage unconfirmed expenses, helping reduce false data entries and improving control over bill tracking
+
+3.7.2      Stimulus/Response Sequences
+
+Stimulus
+
+System Response
+
+User opens the "Pending Bills" section
+
+App displays a list of unconfirmed bills with basic details
+
+User taps on a bill
+
+App shows full parsed data and options: Add or Discard
+
+User taps “Add”
+
+App opens the Add Expense screen with pre-filled values
+
+User taps “Discard”
+
+App deletes the bill from memory and removes it from the pending list
+
+ 
+
+ 
+
+3.7.3      Functional Requirements
+
+·         The system shall display all unconfirmed bills in a "Pending Bills" section.
+
+·         The system shall allow users to review each pending bill and take one of the following actions:
+
+o    Confirm and Add: Opens the expense entry form pre-filled with SMS data.
+
+o    Discard: Permanently deletes the bill from storage, treating it as a false positive.
+
+·         The system shall update the local database to reflect the user's action (add or discard).
+
+·         The system shall not show discarded bills again or retain them in memory.
+
+ 
+
+ 
+
+3.8     Expense Summary & Source Breakdown
+3.8.1      Description and Priority
+
+The system will provide users with an overview of their total spending for the current month and a breakdown of expenses grouped by payment source (e.g., UPI, cash, credit cards, etc.). This feature will be visible on the home dashboard screen. Users can toggle between total monthly spending and a per-source view
+
+3.8.2      Stimulus/Response Sequences
+
+Stimulus
+
+System Response
+
+User opens the app to the home dashboard
+
+System calculates and displays the total spending for the current month.
+
+User switches to the “By Source” tab
+
+System shows the breakdown of spending grouped by payment source.
+
+User adds, edits, or deletes an expense
+
+System recalculates totals and updates both the total and source breakdown views in real time.
+
+ 
+
+ 
+
+3.8.3      Functional Requirements
+
+·         The system shall calculate the total amount transacted in the current month based on all confirmed expenses.
+
+·         The system shall categorize each expense by its payment source (as entered during expense creation).
+
+·         The system shall display a visual breakdown of spending by source for the current month.
+
+·         The system shall update the summary and breakdown dynamically when a new expense is added, edited, or deleted.
+
+·         The user shall be able to switch between the “Total Monthly Spending” view and “Spending by Source” view on the dashboard.
+
+3.9     Expense Summary
+3.9.1      Description and Priority
+
+The system allows users to share generated bills for either an entire group or for a specific participant. Bills can be exported in PDF or TXT format and sent via the device’s native share functionality.
+
+3.9.2      Stimulus/Response Sequences
+
+Stimulus
+
+Response
+
+User selects a bill to share.
+
+App asks if the bill is for the entire group or a specific person.
+
+User chooses group or individual option.
+
+App prompts user to select PDF or TXT format.
+
+User selects file format.
+
+App generates the bill in the chosen format.
+
+File is ready.
+
+Device’s native share sheet opens for user to choose a target app/service.
+
+Target app is selected.
+
+File is sent to the chosen app/service.
+
+ 
+
+ 
+
+3.9.3      Functional Requirements
+
+·         User can choose to share:
+
+o    Entire Group Bill — includes all expenses and participant shares.
+
+o    Individual Bill — shows only the selected participant’s share and related expenses.
+
+·         Supported file formats: PDF and TXT.
+
+·         Sharing is done via the device’s native share sheet, allowing distribution over messaging apps, email, and cloud storage.
+
+·         The PDF layout includes:
+
+o    Bill title, date range, and group name.
+
+o    List of expenses with payer, amount, and payment source.
+
+o    Total share for each participant (or only the selected participant if sharing individually).
+
+·         TXT exports present the same information in simplified text format.
+
+ 
+
+ 
+
+ 
+
+ 
+
+4.     External Interface Requirements
+4.1     User Interfaces
+The application is primarily designed for Android devices, with iOS support provided as a secondary platform using Flutter. The user interface follows Material Design principles to provide a familiar, fast, and responsive experience for Android users.
+
+ 
+
+4.1.1 Design Standards and Style Guidelines:
+
+·         UI follows Material Design 3 for Android.
+
+·         iOS receives platform-consistent layout using Flutter’s Cupertino widgets, but no heavy customization.
+
+·         Includes Dark Mode support.
+
+·         Bottom navigation bar provides access to key screens: Dashboard, Add, Activity, Reports.
+
+ 
+
+4.1.2 Core Screens and Interfaces:
+
+·         Home/Dashboard Screen
+
+o    Overview of total expenses, recent activity preview, and shortcut buttons.
+
+o    Floating Action Button (FAB) for quick “Add Expense” action.
+
+o    Expense Split by Source section showing breakdown of spending by payment method — e.g., UPI, Cash, individual Credit/Debit cards.
+
+§  Presented as a pie chart or bar graph for quick visual understanding.
+
+ 
+
+·         Add Expense Screen
+
+o    Accessed via FAB or SMS notification.
+
+o    Contains fields for: amount, title, date, source, participants, and split method.
+
+o    Auto-filled data when triggered via SMS.
+
+·         Pending Bills Screen
+
+o    Displays expenses, with date of transaction detected from SMS but not confirmed.
+
+o    Users can click on it to go to Add Expense or Discard to reject as false positive.
+
+·         Notification Interface
+
+o    Android system notifications are triggered when SMS is detected.
+
+o    Notification includes: transaction amount, Add, and Discard buttons.
+
+o    If ignored, the entry is stored in the Pending Bills section.
+
+·         Split Bill Interface
+
+o    Available in the Add Expense screen.
+
+o    Includes a toggle between Equal and Custom split.
+
+o    Allows assigning amounts using text inputs.
+
+·         Reports/Individual Bills Screen
+
+o    Displays bill breakdown per individual.
+
+o    Allows exporting or sharing the report.
+
+·         Activity Screen
+
+o    Displays a chronological list of all recent bill entries (manual and SMS).
+
+o    Each entry shows amount, participants, category, and date.
+
+o    Tapping on an entry opens detailed view or edit screen.
+
+o    Optional filters: by date, category, participant.
+
+4.2     Hardware Interfaces
+The application will run on mobile devices and will interact with the following hardware components:
+
+1.    Mobile Device Sensors & Components
+
+o    SMS Module (Android only): Access to the SMS inbox for transaction detection. iOS will not support SMS background reading due to platform restrictions.
+
+o    Touchscreen: All user interactions will be touch-based, optimized for one-handed operation.
+
+o    Notification System Hardware: Device’s notification tray for alerts on new expenses.
+
+2.    Minimum Hardware Specifications
+
+o    Android:
+
+§  OS: Android 8.0 (Oreo) or higher
+
+§  RAM: 2 GB or higher
+
+§  Storage: 100 MB free space (local storage for expenses and bills)
+
+§  Processor: Quad-core or better
+
+o    iOS:
+
+§  OS: iOS 14 or higher
+
+§  RAM: 2 GB or higher
+
+§  Storage: 100 MB free space
+
+§  Processor: A10 chip or newer
+
+3.    External Hardware
+
+o    None required. The app is self-contained and does not require external devices, POS systems, or scanners.
+
+4.3     Software Interfaces
+The application will interact with the following software components:
+
+1.    Mobile Operating Systems
+
+o    Android: Full feature set, including background SMS reading via Android’s SMS content provider API.
+
+o    iOS: Core features supported, but SMS reading is not available due to platform restrictions; manual expense entry remains available.
+
+2.    Flutter Framework & Plugins
+
+o    Local Storage:
+
+§  Drift (formerly Moor) for structured local database storage of expenses, bills, user settings, and transaction metadata.
+
+o    SMS Reading (Android only):
+
+§  telephony or sms plugin for reading transaction messages from the device inbox.
+
+o    Notifications:
+
+§  flutter_local_notifications for scheduling and displaying notifications for detected expenses and pending bill actions.
+
+3.    Other Dependencies
+
+o    Chart Rendering: fl_chart for visualizing monthly totals and spending breakdowns.
+
+o    State Management: Provider or Riverpod for managing app-wide state.
+
+o    Platform Channels: For integrating any future native functions such as bank API linking (if required).
+
+4.    Interoperability Requirements
+
+o    The application will not depend on cloud-based APIs or external web services.
+
+o    All storage and processing will occur locally on the device, ensuring offline functionality.
+
+ 
+
+4.4     Communications Interfaces
+The application is designed to operate entirely on-device, with no dependency on cloud-based communication services. All communication is restricted to the device’s operating system for background processing, notifications, and local data sharing.
+
+·         SMS Read Access (Android only): Uses Android’s SMS permission to monitor incoming transaction-related messages in the background for automatic expense detection.
+
+·         Local Notifications:
+
+o    Android: Uses OS-level local notification APIs to alert users when a new expense is detected.
+
+o    iOS: Uses iOS local notification framework to notify users of detected expenses (note: background SMS detection may be limited by iOS system restrictions).
+
+·         Inter-App Communication for Notifications: Utilizes system intents (Android) and universal links (iOS) to allow the app to open directly from a notification.
+
+·         Bill Sharing: Supports exporting and sharing bills in PDF or TXT format via the device’s native share sheet, enabling transmission over apps like email, messaging services, and cloud storage applications.
+
+ 
+
+5.     Other Nonfunctional Requirements
+5.1     Performance Requirements
+·         The app should process and store incoming SMS transaction data in under 1 second after receipt.
+
+·         Bill generation (PDF or TXT) must be completed within 3 seconds for up to 500 expense entries.
+
+·         Background SMS monitoring should consume less than 2% of daily battery usage under normal operation.
+
+·         Home dashboard loading time should be under 1.5 seconds.
+
+ 
+
+5.2     Safety Requirements
+·         The app will not modify or delete SMS messages; it will only read and parse them.
+
+·         In case of unexpected app termination, partially entered expenses will be saved in local storage for recovery upon restart.
+
+·         Bill sharing will only proceed after explicit user action to prevent accidental sharing of sensitive data
+
+ 
+
+5.3     Security Requirements
+·         All local data storage will be encrypted at rest using AES-256.
+
+·         All generated PDF/TXT files will be stored in a temporary share folder and deleted automatically after 24 hours if not manually saved by the user.
+
+·         The app will request only the permissions strictly necessary for its operation (e.g., SMS read, notifications, storage access for sharing).
+
+·         User activity, such as discarding false positives, will remain private and not be sent to any server.
+
+ 
+
+5.4     Software Quality Attributes
+·         Usability:
+
+·         UI will follow Material Design guidelines for Android and Human Interface Guidelines for iOS, ensuring intuitive navigation.
+
+·         The app will provide in-app tips for first-time users.
+
+·         Reliability:
+
+·         System uptime should be 99%, excluding scheduled updates.
+
+·         Background SMS detection should have at least 95% accuracy in identifying relevant transaction messages.
+
+·         Maintainability:
+
+·         Code will be modular to allow future integration of cloud backup if needed.
+
+·         The database layer will use Drift for maintainable local storage management.
+
+·         Portability:
+
+·         The app will be fully functional on Android (primary target).
+
+·         iOS support will be provided with feature parity except for SMS background reading (due to platform restrictions).
+
+.
+
+6.     Other Requirements
+1.    Legal and Compliance
+
+o    The app must comply with Google Play Store and Apple App Store guidelines, including explicit disclosure and justification for SMS reading permissions on Android.
+
+o    Must adhere to Reserve Bank of India (RBI) and NPCI guidelines where applicable for transaction data handling.
+
+o    Comply with India’s Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011 regarding user data privacy.
+
+2.    Localization and Regional Settings
+
+o    Default language: English (India).
+
+o    All monetary values displayed in Indian Rupees (₹) using Indian numbering system (e.g., 1,00,000).
+
+o    Date format should follow DD-MM-YYYY standard.
+
+3.    Backup & Recovery (Future Scope)
+
+o    No cloud backup in the initial release; data will remain locally stored on the user’s device.
+
+o    Architecture should allow for future addition of cloud backup and sync without major structural changes.
+
+4.    App Distribution
+
+o    Primary distribution through Google Play Store for Android devices in India.
+
+o    iOS version will be released later with manual SMS-based expense entry due to iOS restrictions on SMS background reading.
+
+5.    Limitations
+
+o    Background SMS reading is only available on Android devices.
+
+o    App performance and notifications may vary based on device battery optimization settings and Android version.
+
+ 
+
+ 
